@@ -21,20 +21,22 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract EcoCoin is ERC20, 
-            ERC20Burnable, 
-                  Ownable {
+contract EcoCoin is ERC20, ERC20Burnable, Ownable {
 
-  constructor(uint256 initialSupply, 
-  string memory name, string memory symbol, address initialOwner) 
-  ERC20(name, symbol) Ownable(initialOwner) {
-
-    _mint(initialOwner, initialSupply * 20**uint(decimals()));
-    
+  constructor(uint256 initialSupply, string memory name, string memory symbol, address initialOwner) 
+    ERC20(name, symbol) Ownable(initialOwner) {
+    _mint(initialOwner, initialSupply * 10**uint(decimals()));
   }
 
   function mint(address to, uint256 amount) public onlyOwner {
     _mint(to, amount);
+  }
+
+  
+  function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+    _spendAllowance(sender, address(this), amount); 
+    _transfer(sender, recipient, amount);
+    return true;
   }
 }
 
